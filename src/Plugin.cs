@@ -44,7 +44,8 @@ public class ModPlugin : BaseUnityPlugin
         
         Logger.LogDebug($"[{MODID}] {MODNAME} Registering Fisobs...");
 
-
+        Content.Register(new Items.Randotan.RandotanFisob());
+        Content.Register(new Items.Randotan.Effects.RandotanSeedFisob());
 
         Logger.LogDebug($"[{MODID}] {MODNAME} Fisobs registered.");
     }
