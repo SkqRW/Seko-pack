@@ -1,0 +1,11 @@
+﻿{
+  "id": "seko.pack",
+  "name": "Seko Pack",
+  "version": "000",
+  "authors": "Seko",
+  "description": "My pack of creatures and items.",
+  "tags": [],
+  "requirements": [],
+  "requirements_names": [],
+  "checksum_override_version": false
+}
