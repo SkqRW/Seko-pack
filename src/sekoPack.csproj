@@ -30,4 +30,13 @@
     <Delete Files="@(RemovePlugins)" />
   </Target>
 
+  <Target Name="CopyToModFolder" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <OutputFiles Include="$(OutputPath)\$(AssemblyName).dll" />
+      <OutputFiles Include="$(OutputPath)\$(AssemblyName).pdb" Condition="'$(Configuration)'=='Debug'" />
+    </ItemGroup>
+    
+    <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(MSBuildProjectDirectory)\..\mod\newest\plugins" />
+    </Target>
+
 </Project>
