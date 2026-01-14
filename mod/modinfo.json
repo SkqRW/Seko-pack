@@ -5,7 +5,7 @@
   "authors": "Seko",
   "description": "My pack of creatures and items.",
   "tags": [],
-  "requirements": [],
-  "requirements_names": [],
+  "requirements": ["fisobs"],
+  "requirements_names": ["Fisobs"],
   "checksum_override_version": false
 }
