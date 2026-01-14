@@ -19,7 +19,7 @@ public class ModPlugin : BaseUnityPlugin
 
     public const string MODID = "seko.pack";
     public const string MODNAME = "Seko Pack";
-    public const string MODVERSION = "000";
+    public const string MODVERSION = "0.1";
     static bool IsInit;
 
     public void OnEnable()
