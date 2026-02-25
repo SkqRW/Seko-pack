@@ -17,6 +17,7 @@ public class TVulture : Vulture
 {
     public TVulture(AbstractCreature abstractCreature, World world) : base(abstractCreature, world)
     {
+
     }
 
      public override void InitiateGraphicsModule() => graphicsModule ??= new TVultureGraphics(this);
@@ -25,12 +26,10 @@ public class TVulture : Vulture
 
 internal class TVultureGraphics : VultureGraphics
 {
-    private TVulture vulture;
-
     public TVultureGraphics(TVulture vulture) : base(vulture)
     {
-        this.vulture = vulture;
-    }
+
+   }
 }
 
 public class TVultureCritob : Critob
@@ -46,7 +45,7 @@ public class TVultureCritob : Critob
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new VultureAI(acrit, acrit.world);
     public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new VultureAbstractAI(acrit.world, acrit);
 
-public override CreatureState CreateState(AbstractCreature acrit) => new Vulture.VultureState(acrit) { mask = false };
+public override CreatureState CreateState(AbstractCreature acrit) => new Vulture.VultureState(acrit);
     public override Creature CreateRealizedCreature(AbstractCreature acrit) => new TVulture(acrit, acrit.world);
 
     public override CreatureTemplate CreateTemplate()
