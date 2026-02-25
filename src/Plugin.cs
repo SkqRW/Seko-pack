@@ -4,6 +4,7 @@ using System;
 using System.Security.Permissions;
 
 using Fisobs.Core;
+using UnityEngine.PlayerLoop;
 
 // Allows access to private members
 #pragma warning disable CS0618
@@ -46,7 +47,7 @@ public class ModPlugin : BaseUnityPlugin
         
         Logger.LogDebug($"[{MODID}] {MODNAME} Registering Fisobs...");
 
-
+        Content.Register(new TVultureCritob());
 
         Logger.LogDebug($"[{MODID}] {MODNAME} Fisobs registered.");
     }
