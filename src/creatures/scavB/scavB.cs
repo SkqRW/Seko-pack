@@ -1,0 +1,214 @@
+using Watcher;
+using Fisobs.Core;
+using Fisobs.Creatures;
+using System.Collections.Generic;
+using DevInterface;
+
+using UnityEngine;
+using MoreSlugcats;
+using Fisobs.Creatures;
+using Fisobs.Core;
+using Fisobs.Sandbox;
+using static PathCost.Legality;
+using UnityEngine;
+using System.Collections.Generic;
+using DevInterface;
+using RWCustom;
+using Random = UnityEngine.Random;
+using System;
+
+namespace creatures.scavB;
+
+public class scavB : Scavenger
+{
+    public scavB(AbstractCreature abstractCreature) : base(abstractCreature, abstractCreature.world)
+    {
+
+    }
+}
+
+
+sealed class ScavengerSentinelCritob : Critob
+{
+    internal ScavengerSentinelCritob() : base(Enum.CreatureTemplateType.ScavB)
+    {
+        //Icon = new SimpleIcon("Kill_ScavengerSentinel", Ext.MenuGrey);
+        SandboxPerformanceCost = new(.5f, .925f);
+        LoadedPerformanceCost = 300f;
+        RegisterUnlock(KillScore.Configurable(12), Enum.SandboxUnlockID.ScavB,  parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
+    }
+
+    public override int ExpeditionScore() => 12;
+
+    public override Color DevtoolsMapColor(AbstractCreature acrit)
+    {
+        var absAI = (acrit.abstractAI as ScavengerAbstractAI)!;
+        if (absAI.freeze > 0)
+            return Color.gray;
+        if (absAI.squad is not ScavengerAbstractAI.ScavengerSquad squad)
+            return new(0f, .2f, .14f);
+        var mission = squad.missionType;
+        if (Random.value < .3f && mission != ScavengerAbstractAI.ScavengerSquad.MissionID.None)
+        {
+            if (mission == ScavengerAbstractAI.ScavengerSquad.MissionID.HuntCreature)
+                return Color.red;
+            if (mission == ScavengerAbstractAI.ScavengerSquad.MissionID.GuardOutpost)
+                return Color.blue;
+            if (mission == ScavengerAbstractAI.ScavengerSquad.MissionID.ProtectCreature)
+                return Color.green;
+            if (mission == ScavengerAbstractAI.ScavengerSquad.MissionID.Trade)
+                return new(1f, 1f, 0f);
+        }
+        if (squad.leader == acrit)
+            return Color.Lerp(squad.color, Color.white, Random.value);
+        return squad.color;
+    }
+
+    public override string DevtoolsMapName(AbstractCreature acrit)
+    {
+        var text = "St";
+        if ((acrit.abstractAI as ScavengerAbstractAI)!.squad is not ScavengerAbstractAI.ScavengerSquad squad)
+            return text;
+        var mission = squad.missionType;
+        if (mission != ScavengerAbstractAI.ScavengerSquad.MissionID.None)
+        {
+            if (mission == ScavengerAbstractAI.ScavengerSquad.MissionID.HuntCreature)
+                return text + "(H)";
+            if (mission == ScavengerAbstractAI.ScavengerSquad.MissionID.GuardOutpost)
+                return text + "(G)";
+            if (mission == ScavengerAbstractAI.ScavengerSquad.MissionID.ProtectCreature)
+                return text + "(P)";
+            if (mission == ScavengerAbstractAI.ScavengerSquad.MissionID.Trade)
+                return text + "(T)";
+        }
+        return text;
+    }
+
+    public override IEnumerable<RoomAttractivenessPanel.Category> DevtoolsRoomAttraction() =>
+    [
+        RoomAttractivenessPanel.Category.Swimming,
+        RoomAttractivenessPanel.Category.LikesWater
+    ];
+
+    public override void GraspParalyzesPlayer(Creature.Grasp grasp, ref bool paralyzing) => paralyzing = true;
+
+    public override IEnumerable<string> WorldFileAliases() => ["scavsentinel", "scav sentinel", "scavenger sentinel", "scavengersentinel"];
+
+    public override CreatureTemplate CreateTemplate()
+    {
+        var t = new CreatureFormula(CreatureTemplate.Type.Scavenger, this)
+        {
+            TileResistances = new()
+            {
+                OffScreen = new(1f, Allowed),
+                Floor = new(1f, Allowed),
+                Corridor = new(1f, Allowed),
+                Climb = new(2.5f, Allowed)
+            },
+            ConnectionResistances = new()
+            {
+                Standard = new(1f, Allowed),
+                OpenDiagonal = new(3f, Allowed),
+                ReachOverGap = new(3f, Allowed),
+                ReachUp = new(2f, Allowed),
+                DoubleReachUp = new(2f, Allowed),
+                ReachDown = new(2f, Allowed),
+                SemiDiagonalReach = new(2f, Allowed),
+                DropToFloor = new(10f, Allowed),
+                DropToClimb = new(10f, Allowed),
+                DropToWater = new(10f, Allowed),
+                ShortCut = new(2.5f, Allowed),
+                NPCTransportation = new(225f, Allowed),
+                Slope = new(1.5f, Allowed),
+                RegionTransportation = new(400f, Allowed),
+                OffScreenMovement = new(1.2f, Allowed),
+                BetweenRooms = new(15f, Allowed)
+            },
+            DefaultRelationship = new(CreatureTemplate.Relationship.Type.Ignores, .1f),
+            DamageResistances = new() { Base = 2.5f, Explosion = 2.5f },
+            StunResistances = new() { Base = 3f, Explosion = 2.75f },
+            HasAI = true,
+            Pathing = PreBakedPathing.Ancestral(CreatureTemplate.Type.Scavenger)
+        }.IntoTemplate();
+        t.SetDoubleReachUpConnectionParams(AItile.Accessibility.Climb, AItile.Accessibility.Air, AItile.Accessibility.Climb);
+        t.SetNodeType(AbstractRoomNode.Type.Den, false);
+        t.SetNodeType(AbstractRoomNode.Type.RegionTransportation, true);
+        t.instantDeathDamageLimit = 4f;
+        t.bodySize = 1.3f;
+        t.visualRadius = 1400f;
+        t.movementBasedVision = .35f;
+        t.dangerousToPlayer = .85f;
+        t.meatPoints = 5;
+        return t;
+    }
+
+    public override void EstablishRelationships()
+    {
+        var me = new Relationships(Type);
+        me.FearedBy(CreatureTemplate.Type.BlueLizard, .6f);
+        me.Attacks(CreatureTemplate.Type.BlueLizard, .5f);
+        me.FearedBy(CreatureTemplate.Type.CyanLizard, .2f);
+        me.Attacks(CreatureTemplate.Type.CyanLizard, .5f);
+        me.FearedBy(CreatureTemplate.Type.YellowLizard, .4f);
+        me.Attacks(CreatureTemplate.Type.YellowLizard, .5f);
+        me.FearedBy(CreatureTemplate.Type.PinkLizard, .4f);
+        me.Attacks(CreatureTemplate.Type.PinkLizard, .5f);
+        me.FearedBy(CreatureTemplate.Type.WhiteLizard, .3f);
+        me.Attacks(CreatureTemplate.Type.WhiteLizard, .5f);
+        me.FearedBy(CreatureTemplate.Type.Salamander, .3f);
+        me.Attacks(CreatureTemplate.Type.Salamander, .5f);
+        me.Attacks(CreatureTemplate.Type.BlackLizard, .25f);
+        me.Attacks(creatures.scavA.Enum.CreatureTemplateType.ScavA, 1f);
+        me.IsInPack(Enum.CreatureTemplateType.ScavB, .5f);
+        if (ModManager.DLCShared)
+        {
+            me.FearedBy(DLCSharedEnums.CreatureTemplateType.ZoopLizard, .5f);
+            me.Attacks(DLCSharedEnums.CreatureTemplateType.ZoopLizard, .5f);
+        }
+        if (ModManager.Watcher)
+        {
+            me.Attacks(WatcherEnums.CreatureTemplateType.PeachLizard, .5f);
+            me.FearedBy(WatcherEnums.CreatureTemplateType.PeachLizard, .6f);
+        }
+    }
+
+    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new ScavengerAI(acrit, acrit.world);
+
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new scavB(acrit);
+
+    public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new ScavengerAbstractAI(acrit.world, acrit);
+
+    public override void LoadResources(RainWorld rainWorld) { }
+
+    public override CreatureTemplate.Type? ArenaFallback() => CreatureTemplate.Type.Scavenger;
+}
+
+public class Enum
+{
+    public class CreatureTemplateType
+    {
+        public static CreatureTemplate.Type ScavB = new(nameof(ScavB), true);
+        public void UnregisterValues()
+        {
+            if (ScavB != null)
+            {
+                ScavB.Unregister();
+                ScavB = null;
+            }
+        }
+    }
+
+    public class SandboxUnlockID
+    {
+        public static MultiplayerUnlocks.SandboxUnlockID ScavB = new(nameof(ScavB), true);
+
+        public void UnregisterValues()
+        {
+            if (ScavB != null)
+            {
+                ScavB.Unregister();
+                ScavB = null;
+            }
+        }
+    }
+}
