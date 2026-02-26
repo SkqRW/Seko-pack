@@ -38,6 +38,8 @@ public class ModPlugin : BaseUnityPlugin
         IsInit = true;
 
         Logger.LogDebug($"[{MODID}] {MODNAME} Hello world! {MODVERSION}");
+        Creatures.TVulture.Hooks.init();
+
 
         LoadResources();
     }
@@ -47,7 +49,7 @@ public class ModPlugin : BaseUnityPlugin
         
         Logger.LogDebug($"[{MODID}] {MODNAME} Registering Fisobs...");
 
-        Content.Register(new TVultureCritob());
+        Content.Register(new Creatures.TVulture.TVultureCritob());
 
         Logger.LogDebug($"[{MODID}] {MODNAME} Fisobs registered.");
     }

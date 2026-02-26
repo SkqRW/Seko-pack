@@ -11,7 +11,7 @@ using RWCustom;
 using Random = UnityEngine.Random;
 using System;
 
-namespace SekoPack;
+namespace SekoPack.Creatures.TVulture;
 
 public class TVulture : Vulture
 {
@@ -29,7 +29,26 @@ internal class TVultureGraphics : VultureGraphics
     public TVultureGraphics(TVulture vulture) : base(vulture)
     {
 
-   }
+    }
+
+    public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
+    {
+        base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
+
+
+        float num2 = Custom.AimFromOneVectorToAnother(Vector2.Lerp(this.vulture.neck.tChunks[this.vulture.neck.tChunks.Length - 1].lastPos, this.vulture.neck.tChunks[this.vulture.neck.tChunks.Length - 1].pos, timeStacker), Vector2.Lerp(this.vulture.bodyChunks[4].lastPos, this.vulture.bodyChunks[4].pos, timeStacker));
+        float num3 = (float)(8 - this.headGraphic) * Mathf.Sign(num2) * 22.5f;
+
+        sLeaser.sprites[this.EyesSprite].rotation = num2 - num3;
+		sLeaser.sprites[this.MaskSprite].rotation = num2 - num3;
+		sLeaser.sprites[this.EyesSprite].element = Futile.atlasManager.GetElementWithName("KrakenEyes" + this.headGraphic.ToString());
+		sLeaser.sprites[this.MaskSprite].element = Futile.atlasManager.GetElementWithName("SpikeMask" + this.headGraphic.ToString());
+		sLeaser.sprites[this.EyesSprite].scaleX = ((num2 > 0f) ? -1f : 1f) * (1.15f);
+		sLeaser.sprites[this.MaskSprite].scaleX = ((num2 > 0f) ? -1f : 1f) * (1.15f);
+		sLeaser.sprites[this.EyesSprite].scaleY = 1.15f;
+		sLeaser.sprites[this.MaskSprite].scaleY = 1.15f;
+		sLeaser.sprites[this.MaskSprite].isVisible = (this.vulture.State as Vulture.VultureState).mask;
+    }
 }
 
 public class TVultureCritob : Critob
@@ -42,7 +61,7 @@ public class TVultureCritob : Critob
         RegisterUnlock(KillScore.Configurable(23), Enum.SandboxUnlockID.TVulture, parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
     }
 
-    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new VultureAI(acrit, acrit.world);
+    public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new TVultureAI(acrit, acrit.world);
     public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new VultureAbstractAI(acrit.world, acrit);
 
 public override CreatureState CreateState(AbstractCreature acrit) => new Vulture.VultureState(acrit);
@@ -83,9 +102,9 @@ public override CreatureState CreateState(AbstractCreature acrit) => new Vulture
         t.visualRadius = 12000f;
         t.movementBasedVision = .4f;
         t.waterVision = 0f;
-        t.throughSurfaceVision = 0f;
+        t.throughSurfaceVision = 10f;
         t.hibernateOffScreen = true;
-        t.dangerousToPlayer = 1f;
+        t.dangerousToPlayer = 0.5f;
         t.communityInfluence = .25f;
         t.socialMemory = true;
         t.meatPoints = 15;
@@ -123,7 +142,7 @@ public override CreatureState CreateState(AbstractCreature acrit) => new Vulture
         s.EatenBy(CreatureTemplate.Type.Vulture, .5f);
         s.FearedBy(CreatureTemplate.Type.CicadaA, .3f);
         s.FearedBy(CreatureTemplate.Type.JetFish, .2f);
-        s.IsInPack(CreatureTemplate.Type.Slugcat, 1f);
+        s.IsInPack(CreatureTemplate.Type.Slugcat, 100f);
         s.FearedBy(CreatureTemplate.Type.Scavenger, .5f);
         s.EatenBy(CreatureTemplate.Type.DaddyLongLegs, 1f);
         if (ModManager.DLCShared)
@@ -134,33 +153,3 @@ public override CreatureState CreateState(AbstractCreature acrit) => new Vulture
     }
 }
 
-public class Enum
-{
-    public class CreatureTemplateType
-    {
-        // change TestLizard to your lizard's name
-        public static CreatureTemplate.Type TVulture = new(nameof(TVulture), true);
-        public void UnregisterValues()
-        {
-            if (TVulture != null)
-            {
-                TVulture.Unregister();
-                TVulture = null;
-            }
-        }
-    }
-
-    public class SandboxUnlockID
-    {
-        public static MultiplayerUnlocks.SandboxUnlockID TVulture = new(nameof(TVulture), true);
-
-        public void UnregisterValues()
-        {
-            if (TVulture != null)
-            {
-                TVulture.Unregister();
-                TVulture = null;
-            }
-        }
-    }
-}
