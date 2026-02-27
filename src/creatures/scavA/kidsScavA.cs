@@ -18,11 +18,11 @@ using Random = UnityEngine.Random;
 using System;
 using ScavengerCosmetic;
 
-namespace creatures.scavA;
+namespace creatures.kidScavA;
 
-public class scavA : Scavenger
+public class kidScavA : Scavenger
 {
-    public scavA(AbstractCreature abstractCreature) : base(abstractCreature, abstractCreature.world)
+    public kidScavA(AbstractCreature abstractCreature) : base(abstractCreature, abstractCreature.world)
     {
         //  bodyChunks[2].rad = 8f;
         bodyChunkConnections[1].distance = 45f;
@@ -30,14 +30,14 @@ public class scavA : Scavenger
 
     public override void InitiateGraphicsModule()
     {
-        graphicsModule ??= new scavAGraphics(this);
+        graphicsModule ??= new kidScavAGraphics(this);
         graphicsModule.Reset();
     }
 }
 
-public class scavAGraphics : ScavengerGraphics
+public class kidScavAGraphics : ScavengerGraphics
 {
-    public scavAGraphics(Creature creature) : base(creature)
+    public kidScavAGraphics(Creature creature) : base(creature)
     {
         int num = this.totalSprites;
         this.cloak = new creatures.obj.ScavCloackCp(this, 0);
@@ -50,12 +50,12 @@ public class scavAGraphics : ScavengerGraphics
 
 sealed class ScavengerSentinelCritob : Critob
 {
-    internal ScavengerSentinelCritob() : base(Enum.CreatureTemplateType.ScavA)
+    internal ScavengerSentinelCritob() : base(Enum.CreatureTemplateType.kidScavA)
     {
         //Icon = new SimpleIcon("Kill_ScavengerSentinel", Ext.MenuGrey);
         SandboxPerformanceCost = new(.5f, .925f);
         LoadedPerformanceCost = 300f;
-        RegisterUnlock(KillScore.Configurable(12), Enum.SandboxUnlockID.ScavA,  parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
+        RegisterUnlock(KillScore.Configurable(12), Enum.SandboxUnlockID.kidScavA,  parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
     }
 
     public override int ExpeditionScore() => 12;
@@ -179,7 +179,7 @@ sealed class ScavengerSentinelCritob : Critob
         me.Attacks(CreatureTemplate.Type.Salamander, .5f);
         me.Attacks(CreatureTemplate.Type.BlackLizard, .25f);
         me.Attacks(creatures.scavB.Enum.CreatureTemplateType.ScavB, 1f);
-        me.IsInPack(Enum.CreatureTemplateType.ScavA, .5f);
+        me.IsInPack(Enum.CreatureTemplateType.kidScavA, .5f);
         me.IsInPack(CreatureTemplate.Type.Slugcat, .8f);
         if (ModManager.DLCShared)
         {
@@ -195,7 +195,7 @@ sealed class ScavengerSentinelCritob : Critob
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new ScavengerAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new scavA(acrit);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new kidScavA(acrit);
 
     public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new ScavengerAbstractAI(acrit.world, acrit);
 
@@ -208,27 +208,27 @@ public class Enum
 {
     public class CreatureTemplateType
     {
-        public static CreatureTemplate.Type ScavA = new(nameof(ScavA), true);
+        public static CreatureTemplate.Type kidScavA = new(nameof(kidScavA), true);
         public void UnregisterValues()
         {
-            if (ScavA != null)
+            if (kidScavA != null)
             {
-                ScavA.Unregister();
-                ScavA = null;
+                kidScavA.Unregister();
+                kidScavA = null;
             }
         }
     }
 
     public class SandboxUnlockID
     {
-        public static MultiplayerUnlocks.SandboxUnlockID ScavA = new(nameof(ScavA), true);
+        public static MultiplayerUnlocks.SandboxUnlockID kidScavA = new(nameof(kidScavA), true);
 
         public void UnregisterValues()
         {
-            if (ScavA != null)
+            if (kidScavA != null)
             {
-                ScavA.Unregister();
-                ScavA = null;
+                kidScavA.Unregister();
+                kidScavA = null;
             }
         }
     }
