@@ -18,11 +18,11 @@ using Random = UnityEngine.Random;
 using System;
 using ScavengerCosmetic;
 
-namespace creatures.kidScavA;
+namespace SekoPack.Creatures.LeaderScavA;
 
-public class kidScavA : Scavenger
+public class LeaderScavA : Scavenger
 {
-    public kidScavA(AbstractCreature abstractCreature) : base(abstractCreature, abstractCreature.world)
+    public LeaderScavA(AbstractCreature abstractCreature) : base(abstractCreature, abstractCreature.world)
     {
         //  bodyChunks[2].rad = 8f;
         bodyChunkConnections[1].distance = 45f;
@@ -30,17 +30,17 @@ public class kidScavA : Scavenger
 
     public override void InitiateGraphicsModule()
     {
-        graphicsModule ??= new kidScavAGraphics(this);
+        graphicsModule ??= new leaderScavAGraphics(this);
         graphicsModule.Reset();
     }
 }
 
-public class kidScavAGraphics : ScavengerGraphics
+public class leaderScavAGraphics : ScavengerGraphics
 {
-    public kidScavAGraphics(Creature creature) : base(creature)
+    public leaderScavAGraphics(Creature creature) : base(creature)
     {
         int num = this.totalSprites;
-        this.cloak = new creatures.obj.ScavCloackCp(this, 0);
+        this.cloak = new Creatures.obj.ScavCloackCp(this, 0);
         base.AddSubModule(this.cloak);
         num += this.cloak.totalSprites;
         totalSprites = num;
@@ -50,12 +50,12 @@ public class kidScavAGraphics : ScavengerGraphics
 
 sealed class ScavengerSentinelCritob : Critob
 {
-    internal ScavengerSentinelCritob() : base(Enum.CreatureTemplateType.kidScavA)
+    internal ScavengerSentinelCritob() : base(Enum.CreatureTemplateType.leaderScavA)
     {
         //Icon = new SimpleIcon("Kill_ScavengerSentinel", Ext.MenuGrey);
         SandboxPerformanceCost = new(.5f, .925f);
         LoadedPerformanceCost = 300f;
-        RegisterUnlock(KillScore.Configurable(12), Enum.SandboxUnlockID.kidScavA,  parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
+        RegisterUnlock(KillScore.Configurable(12), Enum.SandboxUnlockID.leaderScavA,  parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
     }
 
     public override int ExpeditionScore() => 12;
@@ -178,9 +178,9 @@ sealed class ScavengerSentinelCritob : Critob
         me.FearedBy(CreatureTemplate.Type.Salamander, .3f);
         me.Attacks(CreatureTemplate.Type.Salamander, .5f);
         me.Attacks(CreatureTemplate.Type.BlackLizard, .25f);
-        me.Attacks(creatures.scavB.Enum.CreatureTemplateType.ScavB, 1f);
-        me.IsInPack(Enum.CreatureTemplateType.kidScavA, .5f);
-        me.IsInPack(CreatureTemplate.Type.Slugcat, .8f);
+        me.Attacks(Creatures.scavB.Enum.CreatureTemplateType.ScavB, 1f);
+        me.IsInPack(Enum.CreatureTemplateType.leaderScavA, .5f);
+        me.IsInPack(CreatureTemplate.Type.Slugcat, .5f);
         if (ModManager.DLCShared)
         {
             me.FearedBy(DLCSharedEnums.CreatureTemplateType.ZoopLizard, .5f);
@@ -195,7 +195,7 @@ sealed class ScavengerSentinelCritob : Critob
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new ScavengerAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new kidScavA(acrit);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new LeaderScavA(acrit);
 
     public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new ScavengerAbstractAI(acrit.world, acrit);
 
@@ -208,27 +208,27 @@ public class Enum
 {
     public class CreatureTemplateType
     {
-        public static CreatureTemplate.Type kidScavA = new(nameof(kidScavA), true);
+        public static CreatureTemplate.Type leaderScavA = new(nameof(leaderScavA), true);
         public void UnregisterValues()
         {
-            if (kidScavA != null)
+            if (leaderScavA != null)
             {
-                kidScavA.Unregister();
-                kidScavA = null;
+                leaderScavA.Unregister();
+                leaderScavA = null;
             }
         }
     }
 
     public class SandboxUnlockID
     {
-        public static MultiplayerUnlocks.SandboxUnlockID kidScavA = new(nameof(kidScavA), true);
+        public static MultiplayerUnlocks.SandboxUnlockID leaderScavA = new(nameof(leaderScavA), true);
 
         public void UnregisterValues()
         {
-            if (kidScavA != null)
+            if (leaderScavA != null)
             {
-                kidScavA.Unregister();
-                kidScavA = null;
+                leaderScavA.Unregister();
+                leaderScavA = null;
             }
         }
     }

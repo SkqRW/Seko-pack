@@ -16,26 +16,46 @@ using DevInterface;
 using RWCustom;
 using Random = UnityEngine.Random;
 using System;
+using ScavengerCosmetic;
 
-namespace creatures.scavB;
+namespace SekoPack.Creatures.kidScavA;
 
-public class scavB : Scavenger
+public class kidScavA : Scavenger
 {
-    public scavB(AbstractCreature abstractCreature) : base(abstractCreature, abstractCreature.world)
+    public kidScavA(AbstractCreature abstractCreature) : base(abstractCreature, abstractCreature.world)
     {
+        //  bodyChunks[2].rad = 8f;
+        bodyChunkConnections[1].distance = 45f;
+    }
 
+    public override void InitiateGraphicsModule()
+    {
+        graphicsModule ??= new kidScavAGraphics(this);
+        graphicsModule.Reset();
+    }
+}
+
+public class kidScavAGraphics : ScavengerGraphics
+{
+    public kidScavAGraphics(Creature creature) : base(creature)
+    {
+        int num = this.totalSprites;
+        this.cloak = new Creatures.obj.ScavCloackCp(this, 0);
+        base.AddSubModule(this.cloak);
+        num += this.cloak.totalSprites;
+        totalSprites = num;
     }
 }
 
 
 sealed class ScavengerSentinelCritob : Critob
 {
-    internal ScavengerSentinelCritob() : base(Enum.CreatureTemplateType.ScavB)
+    internal ScavengerSentinelCritob() : base(Enum.CreatureTemplateType.kidScavA)
     {
         //Icon = new SimpleIcon("Kill_ScavengerSentinel", Ext.MenuGrey);
         SandboxPerformanceCost = new(.5f, .925f);
         LoadedPerformanceCost = 300f;
-        RegisterUnlock(KillScore.Configurable(12), Enum.SandboxUnlockID.ScavB,  parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
+        RegisterUnlock(KillScore.Configurable(12), Enum.SandboxUnlockID.kidScavA,  parent: MultiplayerUnlocks.SandboxUnlockID.Slugcat, data: 0);
     }
 
     public override int ExpeditionScore() => 12;
@@ -158,8 +178,9 @@ sealed class ScavengerSentinelCritob : Critob
         me.FearedBy(CreatureTemplate.Type.Salamander, .3f);
         me.Attacks(CreatureTemplate.Type.Salamander, .5f);
         me.Attacks(CreatureTemplate.Type.BlackLizard, .25f);
-        me.Attacks(creatures.scavA.Enum.CreatureTemplateType.ScavA, 1f);
-        me.IsInPack(Enum.CreatureTemplateType.ScavB, .5f);
+        me.Attacks(Creatures.scavB.Enum.CreatureTemplateType.ScavB, 1f);
+        me.IsInPack(Enum.CreatureTemplateType.kidScavA, .5f);
+        me.IsInPack(CreatureTemplate.Type.Slugcat, .8f);
         if (ModManager.DLCShared)
         {
             me.FearedBy(DLCSharedEnums.CreatureTemplateType.ZoopLizard, .5f);
@@ -174,7 +195,7 @@ sealed class ScavengerSentinelCritob : Critob
 
     public override ArtificialIntelligence CreateRealizedAI(AbstractCreature acrit) => new ScavengerAI(acrit, acrit.world);
 
-    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new scavB(acrit);
+    public override Creature CreateRealizedCreature(AbstractCreature acrit) => new kidScavA(acrit);
 
     public override AbstractCreatureAI? CreateAbstractAI(AbstractCreature acrit) => new ScavengerAbstractAI(acrit.world, acrit);
 
@@ -187,27 +208,27 @@ public class Enum
 {
     public class CreatureTemplateType
     {
-        public static CreatureTemplate.Type ScavB = new(nameof(ScavB), true);
+        public static CreatureTemplate.Type kidScavA = new(nameof(kidScavA), true);
         public void UnregisterValues()
         {
-            if (ScavB != null)
+            if (kidScavA != null)
             {
-                ScavB.Unregister();
-                ScavB = null;
+                kidScavA.Unregister();
+                kidScavA = null;
             }
         }
     }
 
     public class SandboxUnlockID
     {
-        public static MultiplayerUnlocks.SandboxUnlockID ScavB = new(nameof(ScavB), true);
+        public static MultiplayerUnlocks.SandboxUnlockID kidScavA = new(nameof(kidScavA), true);
 
         public void UnregisterValues()
         {
-            if (ScavB != null)
+            if (kidScavA != null)
             {
-                ScavB.Unregister();
-                ScavB = null;
+                kidScavA.Unregister();
+                kidScavA = null;
             }
         }
     }

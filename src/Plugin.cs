@@ -49,9 +49,11 @@ public class ModPlugin : BaseUnityPlugin
         
         Logger.LogDebug($"[{MODID}] {MODNAME} Registering Fisobs...");
 
-        Content.Register(new creatures.scavA.ScavengerSentinelCritob());
-        Content.Register(new creatures.LeaderScavA.ScavengerSentinelCritob());
-        Content.Register(new creatures.scavB.ScavengerSentinelCritob());        Content.Register(new Creatures.TVulture.TVultureCritob());
+        Content.Register(new Creatures.scavA.ScavengerSentinelCritob());
+        Content.Register(new Creatures.LeaderScavA.ScavengerSentinelCritob());
+        Content.Register(new Creatures.scavB.ScavengerSentinelCritob());        
+        Content.Register(new Creatures.TVulture.TVultureCritob());
+        
 
         Logger.LogDebug($"[{MODID}] {MODNAME} Fisobs registered.");
     }
