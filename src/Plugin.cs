@@ -39,7 +39,7 @@ public class ModPlugin : BaseUnityPlugin
 
         Logger.LogDebug($"[{MODID}] {MODNAME} Hello world! {MODVERSION}");
         Creatures.TVulture.Hooks.init();
-
+        Creatures.LeaderScavA.Hooks.Init();
 
         LoadResources();
     }

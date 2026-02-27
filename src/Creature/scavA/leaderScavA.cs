@@ -17,6 +17,7 @@ using RWCustom;
 using Random = UnityEngine.Random;
 using System;
 using ScavengerCosmetic;
+using SSKDEBUG = SKTools.DevTools;
 
 namespace SekoPack.Creatures.LeaderScavA;
 
@@ -26,6 +27,9 @@ public class LeaderScavA : Scavenger
     {
         //  bodyChunks[2].rad = 8f;
         bodyChunkConnections[1].distance = 45f;
+
+        SKTools.DevTools.LogDebug("is this a elite? " + this.Elite);
+
     }
 
     public override void InitiateGraphicsModule()
@@ -37,6 +41,7 @@ public class LeaderScavA : Scavenger
 
 public class leaderScavAGraphics : ScavengerGraphics
 {
+
     public leaderScavAGraphics(Creature creature) : base(creature)
     {
         int num = this.totalSprites;
@@ -44,6 +49,7 @@ public class leaderScavAGraphics : ScavengerGraphics
         base.AddSubModule(this.cloak);
         num += this.cloak.totalSprites;
         totalSprites = num;
+
     }
 }
 
