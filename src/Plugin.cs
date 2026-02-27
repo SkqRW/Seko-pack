@@ -4,6 +4,7 @@ using System;
 using System.Security.Permissions;
 
 using Fisobs.Core;
+using UnityEngine.PlayerLoop;
 
 // Allows access to private members
 #pragma warning disable CS0618
@@ -37,6 +38,8 @@ public class ModPlugin : BaseUnityPlugin
         IsInit = true;
 
         Logger.LogDebug($"[{MODID}] {MODNAME} Hello world! {MODVERSION}");
+        Creatures.TVulture.Hooks.init();
+
 
         LoadResources();
     }
@@ -48,7 +51,7 @@ public class ModPlugin : BaseUnityPlugin
 
         Content.Register(new creatures.scavA.ScavengerSentinelCritob());
         Content.Register(new creatures.LeaderScavA.ScavengerSentinelCritob());
-        Content.Register(new creatures.scavB.ScavengerSentinelCritob());
+        Content.Register(new creatures.scavB.ScavengerSentinelCritob());        Content.Register(new Creatures.TVulture.TVultureCritob());
 
         Logger.LogDebug($"[{MODID}] {MODNAME} Fisobs registered.");
     }
